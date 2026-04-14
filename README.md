@@ -59,3 +59,50 @@ File: `src/camera_test.py`
 ```bash
 python src/camera_test.py
 
+---
+---
+---
+
+## ⚙️ Day 2 Progress
+
+### 🎯 Objective
+To enhance the basic video pipeline by adding frame processing and video recording functionality.
+
+---
+
+### ✅ Video Processing Pipeline
+
+- Captured real-time video frames using OpenCV
+- Retrieved camera properties such as resolution and FPS
+- Implemented fallback FPS handling for unsupported devices
+- Added frame-level processing (text overlay)
+- Displayed processed frames in real-time
+
+---
+
+### ✅ Video Recording System
+
+- Created structured output directory:
+  `data/output/videos/`
+- Used `cv2.VideoWriter` to record video
+- Maintained consistency between input and output resolution
+- Saved processed frames into an `.mp4` file
+
+---
+
+## 🎥 Video Pipeline Module
+
+File: `src/video_pipeline.py`
+
+### ✔ Functionality:
+- Captures live video from webcam
+- Applies basic processing on each frame
+- Displays video in real-time
+- Records and saves video output
+- Allows exit using 'q' key
+
+### ▶️ How to Run
+
+```bash
+python src/video_pipeline.py
+git push
