@@ -58,9 +58,7 @@ File: `src/camera_test.py`
 
 ```bash
 python src/camera_test.py
-
----
----
+```
 ---
 
 ## ⚙️ Day 2 Progress
@@ -105,4 +103,4 @@ File: `src/video_pipeline.py`
 
 ```bash
 python src/video_pipeline.py
-git push
+```
