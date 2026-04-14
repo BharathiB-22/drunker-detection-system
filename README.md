@@ -57,7 +57,7 @@ File: `src/camera_test.py`
 ### ▶️ How to Run
 
 ```bash
-python src/camera_test.py ```
+python src/camera_test.py
 
 ---
 
