@@ -57,58 +57,5 @@ File: `src/camera_test.py`
 ### ▶️ How to Run
 
 ```bash
-python src/camera_test.py
+python src/camera_test.py ```
 
-⚙️ Day 2 – Video Processing & Recording
-📌 Objective
-
-Enhance pipeline by adding:
-
-Frame processing
-Video recording
-Output storage
-🔄 Improvements
-Added frame-level processing
-Implemented video recording
-Created structured output folder
-Prepared pipeline for AI modules
-⚙️ Implementation
-📷 Camera Handling
-Captured:
-Width, Height
-FPS
-Used fallback FPS = 30
-📁 Output Management
-Created folder:
-data/output/videos/
-Used os.makedirs() to avoid errors
-🎬 Video Recording
-Used cv2.VideoWriter
-Codec: mp4v
-Saved as .mp4
-Maintained same resolution
-🧩 Frame Processing
-Added overlay text:
-Video Pipeline Running
-Simulates real-time processing
-🖥️ Display
-Live video display continues
-Exit using 'q' key
-📤 Output
-Live processed webcam feed
-Saved video:
-data/output/videos/output_video.mp4
-🧠 Learning
-Video recording using frames
-FPS synchronization
-File & directory handling
-Pipeline structure for AI integration
-⚠️ Challenges
-FPS inconsistency
-Video encoding formats
-File path handling
-🔗 System Flow
-Camera → Capture → Process → Display → Save
-✅ Conclusion
-Day 1: Basic webcam pipeline
-Day 2: Full video processing system
