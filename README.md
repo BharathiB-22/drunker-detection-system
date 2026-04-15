@@ -58,4 +58,109 @@ File: `src/camera_test.py`
 
 ```bash
 python src/camera_test.py
+<<<<<<< HEAD
 
+=======
+```
+---
+
+## ⚙️ Day 2 Progress
+
+### 🎯 Objective
+To enhance the basic video pipeline by adding frame processing and video recording functionality.
+
+---
+
+### ✅ Video Processing Pipeline
+
+- Captured real-time video frames using OpenCV
+- Retrieved camera properties such as resolution and FPS
+- Implemented fallback FPS handling for unsupported devices
+- Added frame-level processing (text overlay)
+- Displayed processed frames in real-time
+
+---
+
+### ✅ Video Recording System
+
+- Created structured output directory:
+  `data/output/videos/`
+- Used `cv2.VideoWriter` to record video
+- Maintained consistency between input and output resolution
+- Saved processed frames into an `.mp4` file
+
+---
+
+## 🎥 Video Pipeline Module
+
+File: `src/video_pipeline.py`
+
+### ✔ Functionality:
+- Captures live video from webcam
+- Applies basic processing on each frame
+- Displays video in real-time
+- Records and saves video output
+- Allows exit using 'q' key
+
+### ▶️ How to Run
+
+```bash
+python src/video_pipeline.py
+```
+---
+
+## 📅 Day 3 Progress – Face Detection Module
+
+### 🎯 Objective
+To implement real-time face detection using computer vision techniques.
+
+---
+
+### ⚙️ Implementation
+
+- Integrated OpenCV Haar Cascade for face detection
+- Captured real-time video frames from webcam
+- Converted frames to grayscale for efficient processing
+- Detected faces using `detectMultiScale()`
+- Drew bounding boxes around detected faces
+- Displayed face count on screen
+
+---
+
+### 🧠 Model Used
+
+- Haar Cascade Classifier (OpenCV)
+- Chosen for its speed and suitability for real-time applications
+
+---
+
+### 🚀 Advanced Features
+
+- Implemented detection optimization (detect every N frames)
+- Added face tracking and stabilization to reduce flickering
+- Integrated logging system for better debugging
+- Implemented graceful shutdown using signal handling
+
+---
+
+### 📤 Output
+
+- Real-time face detection displayed on screen
+- Bounding boxes drawn around faces
+- Face count displayed dynamically
+- Processed video saved to:
+  `data/output/videos/face_detection_output.mp4`
+
+---
+
+### 🧠 Understanding
+
+- Learned how face detection works using Haar Cascades
+- Understood real-time frame processing
+- Learned performance optimization techniques
+- Understood importance of stabilizing detection results
+
+---
+
+### 🔜 Next Step
+Integrate DeepFace for emotion detection (Day 4)
