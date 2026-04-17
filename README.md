@@ -1,6 +1,6 @@
 # 🍷 Drunken Detection System
 
-## 📌 Project Overview
+## 🚀 Project Overview
 This project aims to develop an AI-based real-time drunken detection system using computer vision and deep learning techniques. The system analyzes facial features and behavioral patterns from video streams to determine whether a person is in a drunken state.
 
 ---
