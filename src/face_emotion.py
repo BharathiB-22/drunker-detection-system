@@ -11,7 +11,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Haar cascade for fast face detection (lightweight, built into OpenCV)
 CASCADE = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
 FACE_CASCADE = cv2.CascadeClassifier(CASCADE)
 
@@ -39,68 +38,66 @@ def run_face_emotion(camera_index=0, analyze_every=15):
     logger.info(f"Recording at {w}x{h}, {fps:.1f} FPS | Output: {out_path}")
     logger.info("Press 'q' to quit")
 
-    # Shared state
     result_lock = threading.Lock()
-    last_box = None       # (x, y, bw, bh) in original frame coords
+    last_box = None
     last_emotion = "Analyzing..."
     last_conf = 0.0
+    last_age = 0
+    last_gender = "Unknown"
     analyzing = False
 
     def analyze(frame):
-        nonlocal last_box, last_emotion, last_conf, analyzing
+        nonlocal last_box, last_emotion, last_conf, last_age, last_gender, analyzing
         try:
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.equalizeHist(gray)
-            faces = FACE_CASCADE.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(80, 80))
+            faces = FACE_CASCADE.detectMultiScale(gray, 1.1, 5, minSize=(80, 80))
 
             if len(faces) == 0:
                 with result_lock:
                     last_box = None
-                    last_emotion = "No Face Detected"
+                    last_emotion = "No Face"
                     last_conf = 0.0
+                    last_age = 0
+                    last_gender = "Unknown"
                 analyzing = False
                 return
 
-            # Pick largest face (closest to camera)
             face = max(faces, key=lambda f: f[2] * f[3])
             x, y, bw, bh = face
 
-            # Add margin for better emotion accuracy
-            margin_x = int(bw * 0.15)
-            margin_y = int(bh * 0.15)
-            x1 = max(0, x - margin_x)
-            y1 = max(0, y - margin_y)
-            x2 = min(frame.shape[1], x + bw + margin_x)
-            y2 = min(frame.shape[0], y + bh + margin_y)
-
-            face_crop = frame[y1:y2, x1:x2]
-            if face_crop.size == 0:
-                analyzing = False
-                return
+            face_crop = frame[y:y + bh, x:x + bw]
 
             res = DeepFace.analyze(
                 img_path=face_crop,
-                actions=["emotion"],
+                actions=["emotion", "age", "gender"],
                 enforce_detection=False,
                 detector_backend="opencv",
                 silent=True,
             )
+
             res = res[0] if isinstance(res, list) else res
-            em_data = res.get("emotion", {})
-            dom = res.get("dominant_emotion", "unknown")
-            conf = float(em_data.get(dom, 0.0))
+
+            emotion = res.get("dominant_emotion", "unknown")
+            conf = res.get("emotion", {}).get(emotion, 0.0)
+            age = res.get("age", 0)
+            gender = res.get("dominant_gender", "Unknown")
+
+            if gender == "Man":
+                gender = "Male"
+            elif gender == "Woman":
+                gender = "Female"
 
             with result_lock:
                 last_box = (x, y, bw, bh)
-                last_emotion = dom
+                last_emotion = emotion
                 last_conf = conf
+                last_age = age
+                last_gender = gender
 
         except Exception as e:
-            logger.warning(f"Analysis failed: {e}")
-            with result_lock:
-                last_box = None
-                last_emotion = "No Face Detected"
-                last_conf = 0.0
+            logger.warning(f"Error: {e}")
+
         analyzing = False
 
     frame_idx = 0
@@ -110,7 +107,6 @@ def run_face_emotion(camera_index=0, analyze_every=15):
             if not ret:
                 break
 
-            # Launch analysis in background thread
             if frame_idx % analyze_every == 0 and not analyzing:
                 analyzing = True
                 threading.Thread(target=analyze, args=(frame.copy(),), daemon=True).start()
@@ -120,19 +116,47 @@ def run_face_emotion(camera_index=0, analyze_every=15):
             with result_lock:
                 if last_box:
                     x, y, bw, bh = last_box
+
                     cv2.rectangle(display, (x, y), (x + bw, y + bh), (0, 255, 0), 2)
+
                     cv2.putText(
-                        display, f"{last_emotion} ({last_conf:.1f}%)",
-                        (x, max(y - 10, 30)), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2,
+                        display,
+                        f"{last_emotion} ({last_conf:.1f}%)",
+                        (x, y - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.7,
+                        (0, 255, 0),
+                        2,
                     )
 
-            cv2.putText(display, "Face Emotion Detection", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+                    cv2.putText(
+                        display,
+                        f"Age: {last_age}",
+                        (x, y + bh + 20),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.7,
+                        (255, 255, 0),
+                        2,
+                    )
+
+                    cv2.putText(
+                        display,
+                        f"Gender: {last_gender}",
+                        (x, y + bh + 45),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.7,
+                        (255, 255, 0),
+                        2,
+                    )
+
             cv2.imshow("Face Emotion Detection", display)
             out.write(display)
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
+
             frame_idx += 1
+
     finally:
         cap.release()
         out.release()
@@ -142,4 +166,3 @@ def run_face_emotion(camera_index=0, analyze_every=15):
 
 if __name__ == "__main__":
     run_face_emotion()
-  

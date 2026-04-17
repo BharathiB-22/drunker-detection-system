@@ -11,3 +11,18 @@ __pycache__/
 
 # Output files
 data/output/videos/*.mp4
+
+# Dataset
+dataset/
+dataset_raw/
+
+# Models
+models/
+*.pth
+*.pt
+*.h5
+*.caffemodel
+
+# Optional system files
+.DS_Store
+Thumbs.db
